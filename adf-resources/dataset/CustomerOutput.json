@@ -1,0 +1,27 @@
+{
+	"name": "CustomerOutput",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Customer_AzureBlobStorageLS",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "2021"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "output",
+				"container": "adftutorialcontainer"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

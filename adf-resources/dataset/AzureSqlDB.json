@@ -1,0 +1,45 @@
+{
+	"name": "AzureSqlDB",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ASD_LS",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "2022_DS"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "movie",
+				"type": "varchar"
+			},
+			{
+				"name": "title",
+				"type": "varchar"
+			},
+			{
+				"name": "genres",
+				"type": "varchar"
+			},
+			{
+				"name": "year",
+				"type": "varchar"
+			},
+			{
+				"name": "Rating",
+				"type": "varchar"
+			},
+			{
+				"name": "Rotton Tomato",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "MovieDB"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

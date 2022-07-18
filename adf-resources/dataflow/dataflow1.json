@@ -1,0 +1,32 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "CustomerSource",
+						"type": "DatasetReference"
+					},
+					"name": "CustomerSource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "CustomerOutput",
+						"type": "DatasetReference"
+					},
+					"name": "CustomerOutpur"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AddPhoneDerivedCol"
+				}
+			],
+			"script": "source(output(\n\t\tColumn_1 as string,\n\t\tColumn_2 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> CustomerSource\nCustomerSource derive(PhoneNum = '9130002682') ~> AddPhoneDerivedCol\nAddPhoneDerivedCol sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> CustomerOutpur"
+		}
+	}
+}

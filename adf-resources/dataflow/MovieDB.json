@@ -1,0 +1,38 @@
+{
+	"name": "MovieDB",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "MovieDBDF",
+						"type": "DatasetReference"
+					},
+					"name": "MovieDB"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Tbl2",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumn1"
+				},
+				{
+					"name": "Select1"
+				},
+				{
+					"name": "AlterRow1"
+				}
+			],
+			"script": "source(output(\n\t\tColumn_1 as string,\n\t\tColumn_2 as string,\n\t\tColumn_3 as string,\n\t\tColumn_4 as string,\n\t\tColumn_5 as string,\n\t\tColumn_6 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> MovieDB\nMovieDB derive(titleEncrypt = sha1(Column_2)) ~> DerivedColumn1\nDerivedColumn1 select(mapColumn(\n\t\tmovie = Column_1,\n\t\ttitle = Column_2,\n\t\tgenres = Column_3,\n\t\tyear = Column_4,\n\t\tRating = Column_5,\n\t\t{Rotton Tomato} = Column_6,\n\t\ttitleEncrypt\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 alterRow(deleteIf(movie=='movie')) ~> AlterRow1\nAlterRow1 sink(allowSchemaDrift: true,\n\tvalidateSchema: true,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1"
+		}
+	}
+}

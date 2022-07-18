@@ -1,0 +1,45 @@
+{
+	"name": "DataBrickPipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Notebook1",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/adftutorial_KPDatabrickFolder/adf_DB_Notebook",
+					"baseParameters": {
+						"input": {
+							"value": "@pipeline().parameters.Name",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"Name": {
+				"type": "string",
+				"defaultValue": "/adftutorial_KPDatabrickFolder/adf_DB_Notebook"
+			}
+		},
+		"folder": {
+			"name": "2021"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-01-10T12:26:14Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

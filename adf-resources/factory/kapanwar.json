@@ -1,0 +1,9 @@
+{
+	"name": "kapanwar",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "5385df73-4fa7-452f-aef9-71b5f47f7a5e",
+		"tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+	}
+}

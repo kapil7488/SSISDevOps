@@ -1,0 +1,37 @@
+{
+	"name": "SSIS-IR",
+	"properties": {
+		"type": "Managed",
+		"typeProperties": {
+			"computeProperties": {
+				"location": "East US",
+				"nodeSize": "Standard_D8_v3",
+				"numberOfNodes": 2,
+				"maxParallelExecutionsPerNode": 8
+			},
+			"ssisProperties": {
+				"catalogInfo": {
+					"catalogServerEndpoint": "kapssql.database.windows.net",
+					"catalogAdminUserName": "kap",
+					"catalogAdminPassword": {
+						"type": "SecureString",
+						"value": "**********"
+					},
+					"catalogPricingTier": "S1"
+				},
+				"edition": "Standard",
+				"licenseType": "LicenseIncluded",
+				"dataProxyProperties": {
+					"connectVia": {
+						"type": "IntegrationRuntimeReference",
+						"referenceName": "SHIR"
+					},
+					"stagingLinkedService": {
+						"type": "LinkedServiceReference",
+						"referenceName": "AzureBlobStorage1"
+					}
+				}
+			}
+		}
+	}
+}
