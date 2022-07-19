@@ -1,0 +1,13 @@
+{
+	"name": "RestService",
+	"properties": {
+		"description": "RestService",
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "http://conferenceapi.azurewebsites.net/",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
