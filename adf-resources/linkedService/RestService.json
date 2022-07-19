@@ -2,6 +2,12 @@
 	"name": "RestService",
 	"properties": {
 		"description": "RestService",
+		"parameters": {
+			"relativeurl": {
+				"type": "string",
+				"defaultValue": "\\speaker"
+			}
+		},
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
