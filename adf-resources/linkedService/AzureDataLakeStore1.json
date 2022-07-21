@@ -1,0 +1,13 @@
+{
+	"name": "AzureDataLakeStore1",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDataLakeStore",
+		"typeProperties": {
+			"dataLakeStoreUri": "https://adlgen1s.azuredatalakestore.net/webhdfs/v1",
+			"tenant": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+			"subscriptionId": "3bd23d77-9964-41e3-95a1-03e929a51c6b",
+			"resourceGroupName": "kapanwar"
+		}
+	}
+}
