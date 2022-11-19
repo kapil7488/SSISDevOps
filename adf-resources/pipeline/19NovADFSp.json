@@ -1,5 +1,5 @@
 {
-	"name": "pipeline2",
+	"name": "19NovADFSp",
 	"properties": {
 		"activities": [
 			{
@@ -26,11 +26,28 @@
 							"type": "DelimitedTextReadSettings"
 						}
 					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".csv"
+						}
+					},
 					"enableStaging": false
 				},
 				"inputs": [
 					{
 						"referenceName": "CSV_Source",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "2022_OutputDS",
 						"type": "DatasetReference"
 					}
 				]
