@@ -1,0 +1,78 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "kapanwar"
+		},
+		"2022_AzureBlobStorage_connectionString": {
+			"value": ""
+		},
+		"ASD_LS_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorage1_connectionString": {
+			"value": ""
+		},
+		"AzureDatabricks_accessToken": {
+			"value": ""
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"value": ""
+		},
+		"Blob_connectionString": {
+			"value": ""
+		},
+		"Customer_AzureBlobStorageLS_connectionString": {
+			"value": ""
+		},
+		"MININTDUS6TVR_password": {
+			"value": ""
+		},
+		"SqlServerOnPrem_connectionString": {
+			"value": ""
+		},
+		"Tbl1_connectionString": {
+			"value": ""
+		},
+		"logForMovie_connectionString": {
+			"value": ""
+		},
+		"AzureDataLakeStore1_properties_typeProperties_dataLakeStoreUri": {
+			"value": "https://adlgen1s.azuredatalakestore.net/webhdfs/v1"
+		},
+		"AzureDataLakeStore1_properties_typeProperties_tenant": {
+			"value": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+		},
+		"AzureDataLakeStore1_properties_typeProperties_subscriptionId": {
+			"value": "3bd23d77-9964-41e3-95a1-03e929a51c6b"
+		},
+		"AzureDataLakeStore1_properties_typeProperties_resourceGroupName": {
+			"value": "kapanwar"
+		},
+		"MININTDUS6TVR_properties_typeProperties_host": {
+			"value": "MININT-DUS6TVR"
+		},
+		"MININTDUS6TVR_properties_typeProperties_userName": {
+			"value": "kapanwar"
+		},
+		"RestService_properties_typeProperties_url": {
+			"value": "http://conferenceapi.azurewebsites.net/"
+		},
+		"SSIS-IR_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
+			"value": "kapssql.database.windows.net"
+		},
+		"SSIS-IR_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName": {
+			"value": "kap"
+		},
+		"SSIS-IR_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
+			"value": ""
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}

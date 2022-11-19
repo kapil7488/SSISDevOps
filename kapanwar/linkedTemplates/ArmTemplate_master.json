@@ -1,0 +1,208 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "kapanwar"
+		},
+		"2022_AzureBlobStorage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of '2022_AzureBlobStorage'"
+		},
+		"ASD_LS_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ASD_LS'"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
+		},
+		"AzureDatabricks_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks'"
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
+		"Blob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Blob'"
+		},
+		"Customer_AzureBlobStorageLS_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Customer_AzureBlobStorageLS'"
+		},
+		"MININTDUS6TVR_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'MININTDUS6TVR'"
+		},
+		"SqlServerOnPrem_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SqlServerOnPrem'"
+		},
+		"Tbl1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Tbl1'"
+		},
+		"logForMovie_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'logForMovie'"
+		},
+		"AzureDataLakeStore1_properties_typeProperties_dataLakeStoreUri": {
+			"type": "string",
+			"defaultValue": "https://adlgen1s.azuredatalakestore.net/webhdfs/v1"
+		},
+		"AzureDataLakeStore1_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+		},
+		"AzureDataLakeStore1_properties_typeProperties_subscriptionId": {
+			"type": "string",
+			"defaultValue": "3bd23d77-9964-41e3-95a1-03e929a51c6b"
+		},
+		"AzureDataLakeStore1_properties_typeProperties_resourceGroupName": {
+			"type": "string",
+			"defaultValue": "kapanwar"
+		},
+		"MININTDUS6TVR_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "MININT-DUS6TVR"
+		},
+		"MININTDUS6TVR_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "kapanwar"
+		},
+		"RestService_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "http://conferenceapi.azurewebsites.net/"
+		},
+		"SSIS-IR_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
+			"type": "string",
+			"defaultValue": "kapssql.database.windows.net"
+		},
+		"SSIS-IR_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName": {
+			"type": "string",
+			"defaultValue": "kap"
+		},
+		"SSIS-IR_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
+			"type": "secureString"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "kapanwar_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"2022_AzureBlobStorage_connectionString": {
+						"value": "[parameters('2022_AzureBlobStorage_connectionString')]"
+					},
+					"ASD_LS_connectionString": {
+						"value": "[parameters('ASD_LS_connectionString')]"
+					},
+					"AzureBlobStorage1_connectionString": {
+						"value": "[parameters('AzureBlobStorage1_connectionString')]"
+					},
+					"AzureDatabricks_accessToken": {
+						"value": "[parameters('AzureDatabricks_accessToken')]"
+					},
+					"AzureSqlDatabase1_connectionString": {
+						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
+					},
+					"Blob_connectionString": {
+						"value": "[parameters('Blob_connectionString')]"
+					},
+					"Customer_AzureBlobStorageLS_connectionString": {
+						"value": "[parameters('Customer_AzureBlobStorageLS_connectionString')]"
+					},
+					"MININTDUS6TVR_password": {
+						"value": "[parameters('MININTDUS6TVR_password')]"
+					},
+					"Tbl1_connectionString": {
+						"value": "[parameters('Tbl1_connectionString')]"
+					},
+					"logForMovie_connectionString": {
+						"value": "[parameters('logForMovie_connectionString')]"
+					},
+					"AzureDataLakeStore1_properties_typeProperties_dataLakeStoreUri": {
+						"value": "[parameters('AzureDataLakeStore1_properties_typeProperties_dataLakeStoreUri')]"
+					},
+					"AzureDataLakeStore1_properties_typeProperties_tenant": {
+						"value": "[parameters('AzureDataLakeStore1_properties_typeProperties_tenant')]"
+					},
+					"AzureDataLakeStore1_properties_typeProperties_subscriptionId": {
+						"value": "[parameters('AzureDataLakeStore1_properties_typeProperties_subscriptionId')]"
+					},
+					"AzureDataLakeStore1_properties_typeProperties_resourceGroupName": {
+						"value": "[parameters('AzureDataLakeStore1_properties_typeProperties_resourceGroupName')]"
+					},
+					"MININTDUS6TVR_properties_typeProperties_host": {
+						"value": "[parameters('MININTDUS6TVR_properties_typeProperties_host')]"
+					},
+					"MININTDUS6TVR_properties_typeProperties_userName": {
+						"value": "[parameters('MININTDUS6TVR_properties_typeProperties_userName')]"
+					},
+					"RestService_properties_typeProperties_url": {
+						"value": "[parameters('RestService_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "kapanwar_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"SqlServerOnPrem_connectionString": {
+						"value": "[parameters('SqlServerOnPrem_connectionString')]"
+					},
+					"SSIS-IR_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
+						"value": "[parameters('SSIS-IR_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint')]"
+					},
+					"SSIS-IR_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName": {
+						"value": "[parameters('SSIS-IR_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName')]"
+					},
+					"SSIS-IR_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
+						"value": "[parameters('SSIS-IR_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'kapanwar_ArmTemplate_0')]"
+			]
+		}
+	]
+}

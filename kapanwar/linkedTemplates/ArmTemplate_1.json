@@ -1,0 +1,705 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "kapanwar"
+		},
+		"SqlServerOnPrem_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SqlServerOnPrem'"
+		},
+		"SSIS-IR_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
+			"type": "string",
+			"defaultValue": "kapssql.database.windows.net"
+		},
+		"SSIS-IR_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName": {
+			"type": "string",
+			"defaultValue": "kap"
+		},
+		"SSIS-IR_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
+			"type": "secureString"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/MovieDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "2022_DS"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "moviesDB.csv",
+						"folderPath": "kapsstorage/sampledata",
+						"container": "kapsstorage"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MovieDBDF')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "2021"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "moviesDB.csv",
+						"folderPath": "adfdataflowdocs/adfdataflowdocs/sampledata",
+						"container": "adftutorialcontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Tbl2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Tbl1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "2021"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Tbl2"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SqlServerOnPrem')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('SqlServerOnPrem_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "SHIR",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SSIS-IR')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "East US",
+						"nodeSize": "Standard_D8_v3",
+						"numberOfNodes": 2,
+						"maxParallelExecutionsPerNode": 8
+					},
+					"ssisProperties": {
+						"catalogInfo": {
+							"catalogServerEndpoint": "[parameters('SSIS-IR_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint')]",
+							"catalogAdminUserName": "[parameters('SSIS-IR_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName')]",
+							"catalogAdminPassword": {
+								"type": "SecureString",
+								"value": "[parameters('SSIS-IR_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword')]"
+							},
+							"catalogPricingTier": "S1"
+						},
+						"edition": "Standard",
+						"licenseType": "LicenseIncluded",
+						"dataProxyProperties": {
+							"connectVia": {
+								"type": "IntegrationRuntimeReference",
+								"referenceName": "SHIR"
+							},
+							"stagingLinkedService": {
+								"type": "LinkedServiceReference",
+								"referenceName": "AzureBlobStorage1"
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Copy Activity')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MovieDB",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AzureSqlDB",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "2022_Proj"
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-01-10T12:26:15Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/MovieDB')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/JSONRadio')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Json1",
+								"type": "DatasetReference"
+							},
+							"name": "FileSvrJasonRadio"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Select1"
+						},
+						{
+							"name": "CountSubtypeByGender"
+						},
+						{
+							"name": "OriginalData"
+						},
+						{
+							"name": "SubByLocation"
+						},
+						{
+							"name": "Join1"
+						},
+						{
+							"name": "Join2"
+						},
+						{
+							"name": "Cleanup"
+						},
+						{
+							"name": "FullName"
+						},
+						{
+							"name": "FinalDataCleanedUp"
+						}
+					],
+					"script": "source(output(\n\t\tts as string,\n\t\tuserId as string,\n\t\tsessionId as string,\n\t\tpage as string,\n\t\tauth as string,\n\t\tmethod as string,\n\t\tstatus as string,\n\t\tlevel as string,\n\t\titemInSession as string,\n\t\tlocation as string,\n\t\tlastName as string,\n\t\tfirstName as string,\n\t\tregistration as string,\n\t\tgender as string,\n\t\tartist as string,\n\t\tsong as string,\n\t\tlength as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> FileSvrJasonRadio\nFileSvrJasonRadio select(mapColumn(\n\t\ttimestamp = ts,\n\t\tuserId,\n\t\tsessionId,\n\t\tpage,\n\t\tauth,\n\t\tmethod,\n\t\tstatus,\n\t\tlevel_type = level,\n\t\titemInSession,\n\t\tlocation,\n\t\tlastName,\n\t\tfirstName,\n\t\tregistration,\n\t\tgender\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 aggregate(groupBy(gender,\n\t\tlevel_type),\n\tgenderCount = count(),\n\t\ttimestamp = first(timestamp)) ~> CountSubtypeByGender\nSelect1 select(mapColumn(\n\t\ttimestamp,\n\t\tuserId,\n\t\tsessionId,\n\t\tpage,\n\t\tauth,\n\t\tmethod,\n\t\tstatus,\n\t\tlevel_type,\n\t\titemInSession,\n\t\tlocation,\n\t\tlastName,\n\t\tfirstName,\n\t\tregistration,\n\t\tgender\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> OriginalData\nSelect1 aggregate(groupBy(location),\n\tSubByLocation = count(),\n\t\ttimestamp = first(timestamp)) ~> SubByLocation\nOriginalData, CountSubtypeByGender join(OriginalData@timestamp == CountSubtypeByGender@timestamp,\n\tjoinType:'left',\n\tmatchType:'exact',\n\tignoreSpaces: false,\n\tbroadcast: 'auto')~> Join1\nJoin1, SubByLocation join(OriginalData@timestamp == SubByLocation@timestamp,\n\tjoinType:'left',\n\tmatchType:'exact',\n\tignoreSpaces: false,\n\tbroadcast: 'auto')~> Join2\nJoin2 select(mapColumn(\n\t\tuserId,\n\t\tsessionId,\n\t\tpage,\n\t\tauth,\n\t\tmethod,\n\t\tstatus,\n\t\tlevel_type = OriginalData@level_type,\n\t\titemInSession,\n\t\tlocation = OriginalData@location,\n\t\tlastName,\n\t\tfirstName,\n\t\tregistration,\n\t\tgender = OriginalData@gender,\n\t\tgender = CountSubtypeByGender@gender,\n\t\tlevel_type = CountSubtypeByGender@level_type,\n\t\tgenderCount,\n\t\ttimestamp = CountSubtypeByGender@timestamp,\n\t\tlocation = SubByLocation@location,\n\t\tSubByLocation\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Cleanup\nCleanup derive(FullName = firstName + ' ' +lastName) ~> FullName\nFullName select(mapColumn(\n\t\tuserId,\n\t\tFullName,\n\t\tsessionId,\n\t\tpage,\n\t\tauth,\n\t\tmethod,\n\t\tstatus,\n\t\tlevel_type,\n\t\titemInSession,\n\t\tlocation,\n\t\tregistration,\n\t\tgender,\n\t\tgenderCount,\n\t\ttimestamp,\n\t\tSubByLocation\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> FinalDataCleanedUp\nFinalDataCleanedUp sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tId as integer,\n\t\tName as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MovieDB')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "MovieDBDF",
+								"type": "DatasetReference"
+							},
+							"name": "MovieDB"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Tbl2",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "DerivedColumn1"
+						},
+						{
+							"name": "Select1"
+						},
+						{
+							"name": "AlterRow1"
+						}
+					],
+					"script": "source(output(\n\t\tColumn_1 as string,\n\t\tColumn_2 as string,\n\t\tColumn_3 as string,\n\t\tColumn_4 as string,\n\t\tColumn_5 as string,\n\t\tColumn_6 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> MovieDB\nMovieDB derive(titleEncrypt = sha1(Column_2)) ~> DerivedColumn1\nDerivedColumn1 select(mapColumn(\n\t\tmovie = Column_1,\n\t\ttitle = Column_2,\n\t\tgenres = Column_3,\n\t\tyear = Column_4,\n\t\tRating = Column_5,\n\t\t{Rotton Tomato} = Column_6,\n\t\ttitleEncrypt\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSelect1 alterRow(deleteIf(movie=='movie')) ~> AlterRow1\nAlterRow1 sink(allowSchemaDrift: true,\n\tvalidateSchema: true,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/MovieDBDF')]",
+				"[concat(variables('factoryId'), '/datasets/Tbl2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "CustomerSource",
+								"type": "DatasetReference"
+							},
+							"name": "CustomerSource"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "CustomerOutput",
+								"type": "DatasetReference"
+							},
+							"name": "CustomerOutpur"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddPhoneDerivedCol"
+						}
+					],
+					"script": "source(output(\n\t\tColumn_1 as string,\n\t\tColumn_2 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> CustomerSource\nCustomerSource derive(PhoneNum = '9130002682') ~> AddPhoneDerivedCol\nAddPhoneDerivedCol sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> CustomerOutpur"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow2')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference"
+							},
+							"name": "Tbl1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Tbl2",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [],
+					"script": "source(output(\n\t\tId as integer,\n\t\tName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'select * from Tbl1\\n',\n\tformat: 'query') ~> Tbl1\nTbl1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Tbl2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Demo_Aggregateftn')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DFT_Radio",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "JSONRadio",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"FileSvrJasonRadio": {},
+									"sink1": {
+										"param1": 1
+									}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "2021"
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-01-10T12:26:14Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/JSONRadio')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Demo_AlterRow')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "MovieDB",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"MovieDB": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "2021"
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-01-10T12:26:14Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/MovieDB')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Tbl1toTbl2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DFT",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflow2",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"Tbl1": {
+										"param1": 1
+									},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "2021"
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-01-10T12:26:14Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "MoveFromBlobToBLob",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflow1",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"CustomerSource": {},
+									"CustomerOutpur": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "2021"
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-01-10T12:26:14Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Trig')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Tbl1toTbl2",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					},
+					{
+						"pipelineReference": {
+							"referenceName": "DataBrickPipeline",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					},
+					{
+						"pipelineReference": {
+							"referenceName": "Demo_Aggregateftn",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Minute",
+						"interval": 1,
+						"startTime": "2021-05-14T14:58:00Z",
+						"timeZone": "UTC"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Tbl1toTbl2')]",
+				"[concat(variables('factoryId'), '/pipelines/Demo_Aggregateftn')]"
+			]
+		}
+	]
+}

@@ -1,0 +1,615 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "kapanwar"
+		},
+		"2022_AzureBlobStorage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of '2022_AzureBlobStorage'"
+		},
+		"ASD_LS_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ASD_LS'"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
+		},
+		"AzureDatabricks_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks'"
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
+		"Blob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Blob'"
+		},
+		"Customer_AzureBlobStorageLS_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Customer_AzureBlobStorageLS'"
+		},
+		"MININTDUS6TVR_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'MININTDUS6TVR'"
+		},
+		"Tbl1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Tbl1'"
+		},
+		"logForMovie_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'logForMovie'"
+		},
+		"AzureDataLakeStore1_properties_typeProperties_dataLakeStoreUri": {
+			"type": "string",
+			"defaultValue": "https://adlgen1s.azuredatalakestore.net/webhdfs/v1"
+		},
+		"AzureDataLakeStore1_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+		},
+		"AzureDataLakeStore1_properties_typeProperties_subscriptionId": {
+			"type": "string",
+			"defaultValue": "3bd23d77-9964-41e3-95a1-03e929a51c6b"
+		},
+		"AzureDataLakeStore1_properties_typeProperties_resourceGroupName": {
+			"type": "string",
+			"defaultValue": "kapanwar"
+		},
+		"MININTDUS6TVR_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "MININT-DUS6TVR"
+		},
+		"MININTDUS6TVR_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "kapanwar"
+		},
+		"RestService_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "http://conferenceapi.azurewebsites.net/"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/2022_AzureBlobStorage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "2022_Finals",
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('2022_AzureBlobStorage_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ASD_LS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Azure SQL DB Linked Service",
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('ASD_LS_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorage1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStore1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDataLakeStore",
+				"typeProperties": {
+					"dataLakeStoreUri": "[parameters('AzureDataLakeStore1_properties_typeProperties_dataLakeStoreUri')]",
+					"tenant": "[parameters('AzureDataLakeStore1_properties_typeProperties_tenant')]",
+					"subscriptionId": "[parameters('AzureDataLakeStore1_properties_typeProperties_subscriptionId')]",
+					"resourceGroupName": "[parameters('AzureDataLakeStore1_properties_typeProperties_resourceGroupName')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDatabricks')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-2548339229932776.16.azuredatabricks.net",
+					"accessToken": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDatabricks_accessToken')]"
+					},
+					"newClusterNodeType": "Standard_NC12",
+					"newClusterNumOfWorker": "1",
+					"newClusterVersion": "5.5.x-gpu-scala2.11",
+					"newClusterInitScripts": [],
+					"clusterOption": "Fixed"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSqlDatabase1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Blob')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "AzBlob",
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('Blob_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Customer_AzureBlobStorageLS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('Customer_AzureBlobStorageLS_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MININTDUS6TVR')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Mydesktop",
+				"annotations": [],
+				"type": "FtpServer",
+				"typeProperties": {
+					"host": "[parameters('MININTDUS6TVR_properties_typeProperties_host')]",
+					"port": 21,
+					"enableSsl": true,
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('MININTDUS6TVR_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('MININTDUS6TVR_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestService')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "RestService",
+				"parameters": {
+					"relativeurl": {
+						"type": "string",
+						"defaultValue": "\\speaker"
+					}
+				},
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('RestService_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Tbl1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('Tbl1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/logForMovie')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "FaultTolerance",
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('logForMovie_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SHIR')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"description": "Self Hosted for MININT-DUS6TVR",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataBrickPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Notebook1",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/adftutorial_KPDatabrickFolder/adf_DB_Notebook",
+							"baseParameters": {
+								"input": {
+									"value": "@pipeline().parameters.Name",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"Name": {
+						"type": "string",
+						"defaultValue": "/adftutorial_KPDatabrickFolder/adf_DB_Notebook"
+					}
+				},
+				"folder": {
+					"name": "2021"
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-01-10T12:26:14Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricks')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ASD_LS",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "2022_DS"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "movie",
+						"type": "varchar"
+					},
+					{
+						"name": "title",
+						"type": "varchar"
+					},
+					{
+						"name": "genres",
+						"type": "varchar"
+					},
+					{
+						"name": "year",
+						"type": "varchar"
+					},
+					{
+						"name": "Rating",
+						"type": "varchar"
+					},
+					{
+						"name": "Rotton Tomato",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "MovieDB"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ASD_LS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Tbl1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"param1": {
+						"type": "int",
+						"defaultValue": 1
+					}
+				},
+				"folder": {
+					"name": "2021"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Tbl1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Tbl1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CSV_Source')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "2022_AzureBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "2022_DS/2022_Finals"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Address.csv",
+						"folderPath": "kapsstorage/sampledata",
+						"container": "kapsstorage"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "1\t1970 Napa Ct.\t\tBothell\t79\t98011\tE6100000010CAE8BFC28BCE4474067A89189898A5EC0\t{9AADCB0D-36CF-483F-84D8-585C2D4EC6E9}\t2007-12-04 00:00:00",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/2022_AzureBlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CustomerOutput')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Customer_AzureBlobStorageLS",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "2021"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "output",
+						"container": "adftutorialcontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Customer_AzureBlobStorageLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CustomerSource')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Customer_AzureBlobStorageLS",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "2021"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Customerr.txt",
+						"container": "adftutorialcontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Customer_AzureBlobStorageLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Json1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Customer_AzureBlobStorageLS",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "2021"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "small_radio_json.json",
+						"container": "adftutorialcontainer"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"ts": {
+							"type": "integer"
+						},
+						"userId": {
+							"type": "string"
+						},
+						"sessionId": {
+							"type": "integer"
+						},
+						"page": {
+							"type": "string"
+						},
+						"auth": {
+							"type": "string"
+						},
+						"method": {
+							"type": "string"
+						},
+						"status": {
+							"type": "integer"
+						},
+						"level": {
+							"type": "string"
+						},
+						"itemInSession": {
+							"type": "integer"
+						},
+						"location": {
+							"type": "string"
+						},
+						"lastName": {
+							"type": "string"
+						},
+						"firstName": {
+							"type": "string"
+						},
+						"registration": {
+							"type": "integer"
+						},
+						"gender": {
+							"type": "string"
+						},
+						"artist": {
+							"type": "string"
+						},
+						"song": {
+							"type": "string"
+						},
+						"length": {
+							"type": "number"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Customer_AzureBlobStorageLS')]"
+			]
+		}
+	]
+}
