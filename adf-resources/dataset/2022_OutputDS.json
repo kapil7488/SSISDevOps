@@ -13,7 +13,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "copy.csv",
+				"fileName": "copied.csv",
+				"folderPath": "kapsstorage",
 				"container": "kapsstorage"
 			},
 			"columnDelimiter": ",",
