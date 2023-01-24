@@ -336,6 +336,41 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/2022_OutputDS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "2022_AzureBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "2022_DS/2022_Finals"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "copied.csv",
+						"folderPath": "kapsstorage",
+						"container": "kapsstorage"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/2022_AzureBlobStorage')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlDB')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -441,7 +476,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "Address.csv",
+						"fileName": "names2.csv",
 						"folderPath": "kapsstorage/sampledata",
 						"container": "kapsstorage"
 					},
@@ -524,88 +559,6 @@
 						"type": "String"
 					}
 				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Customer_AzureBlobStorageLS')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Json1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Customer_AzureBlobStorageLS",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "2021"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "small_radio_json.json",
-						"container": "adftutorialcontainer"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"ts": {
-							"type": "integer"
-						},
-						"userId": {
-							"type": "string"
-						},
-						"sessionId": {
-							"type": "integer"
-						},
-						"page": {
-							"type": "string"
-						},
-						"auth": {
-							"type": "string"
-						},
-						"method": {
-							"type": "string"
-						},
-						"status": {
-							"type": "integer"
-						},
-						"level": {
-							"type": "string"
-						},
-						"itemInSession": {
-							"type": "integer"
-						},
-						"location": {
-							"type": "string"
-						},
-						"lastName": {
-							"type": "string"
-						},
-						"firstName": {
-							"type": "string"
-						},
-						"registration": {
-							"type": "integer"
-						},
-						"gender": {
-							"type": "string"
-						},
-						"artist": {
-							"type": "string"
-						},
-						"song": {
-							"type": "string"
-						},
-						"length": {
-							"type": "number"
-						}
-					}
-				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/Customer_AzureBlobStorageLS')]"
